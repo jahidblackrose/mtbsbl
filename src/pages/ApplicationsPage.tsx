@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import StatusBadge from "@/components/common/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ const MOCK_APPS: MockApp[] = [
 const LOAN_TYPE_LABELS: Record<LoanType, string> = { SBL: "SBL", SBL_PLUS: "SBL Plus", TOP_UP: "Top-up" };
 
 const ApplicationsPage = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
@@ -47,7 +49,7 @@ const ApplicationsPage = () => {
           <h1 className="text-2xl font-bold tracking-tight">Loan Applications</h1>
           <p className="text-muted-foreground">Manage and track all loan applications.</p>
         </div>
-        <Button>
+        <Button onClick={() => navigate("/applications/new")}>
           <Plus className="mr-2 h-4 w-4" /> New Application
         </Button>
       </div>
@@ -99,7 +101,7 @@ const ApplicationsPage = () => {
               </thead>
               <tbody>
                 {filtered.map((app) => (
-                  <tr key={app.id} className="border-b last:border-0 hover:bg-muted/30 cursor-pointer transition-colors">
+                  <tr key={app.id} className="border-b last:border-0 hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => navigate(`/applications/${app.id}`)}>
                     <td className="px-4 py-2.5 font-mono text-xs">{app.id}</td>
                     <td className="px-4 py-2.5 font-medium">{app.customer}</td>
                     <td className="px-4 py-2.5">{LOAN_TYPE_LABELS[app.type]}</td>

@@ -10,6 +10,8 @@ import LoginPage from "@/pages/LoginPage";
 import DashboardPage from "@/pages/DashboardPage";
 import CustomersPage from "@/pages/CustomersPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
+import NewApplicationPage from "@/pages/NewApplicationPage";
+import ApplicationDetailPage from "@/pages/ApplicationDetailPage";
 import CibPage from "@/pages/CibPage";
 import UnderwritingPage from "@/pages/UnderwritingPage";
 import CadPage from "@/pages/CadPage";
@@ -37,6 +39,8 @@ const App = () => (
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/customers" element={<CustomersPage />} />
                 <Route path="/applications" element={<ApplicationsPage />} />
+                <Route path="/applications/new" element={<NewApplicationPage />} />
+                <Route path="/applications/:id" element={<ApplicationDetailPage />} />
                 <Route path="/cib" element={<CibPage />} />
                 <Route path="/underwriting" element={<UnderwritingPage />} />
                 <Route path="/cad" element={<CadPage />} />
