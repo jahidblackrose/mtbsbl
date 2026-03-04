@@ -1,0 +1,50 @@
+## [Standard ASP.NET Core and Node.js ignore patterns]
+
+# --- .NET / Visual Studio ---
+bin/
+obj/
+[Xx][Bb][Ii][Nn]/
+[Zz][Oo][Bb][Jj]/
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.user
+*.userosscache
+*.sln.docuser
+.vs/
+.vscode/
+*.suo
+*.userprefs
+*.btp
+*.ide
+*.orig
+*.suo
+*.user
+*.userosscache
+*.sln.docuser
+
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+bun.lockb
+
+# --- Frontend Build Artifacts ---
+# We keep output.css as it is needed for the site to run without Node
+# but you can ignore it if your build server generates it
+# wwwroot/css/output.css
+
+# --- Environment Secrets ---
+.env
+.env.development
+.env.production
+.env.local
+appsettings.json
+# Note: appsettings.json is often kept for structure, but secrets should be in User Secrets or Environment Variables
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,79 @@
+@using SBL.Web.Infrastructure
+@model IEnumerable<SBL.Web.Models.LoanApplicationModel>
+
+@{
+    ViewData["Title"] = "Loan Applications";
+}
+
+<div class="space-y-6 animate-fade-in">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight">Loan Applications</h1>
+            <p class="text-muted-foreground">Manage and track all loan applications.</p>
+        </div>
+        <a asp-action="Create" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+            <i data-lucide="plus" class="mr-2 h-4 w-4"></i> New Application
+        </a>
+    </div>
+
+    <div class="rounded-xl border bg-card text-card-foreground shadow">
+        <div class="p-6 pb-3">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div class="relative flex-1">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"></i>
+                    <input type="text" placeholder="Search by ID or customer…" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                </div>
+                <div class="w-44">
+                    <select class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <option value="all">All Statuses</option>
+                        <option value="draft">Draft</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="cib_pending">CIB Pending</option>
+                        <option value="under_review">Under Review</option>
+                        <option value="query_raised">Query Raised</option>
+                        <option value="approved">Approved</option>
+                        <option value="declined">Declined</option>
+                        <option value="disbursed">Disbursed</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b bg-muted/50">
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">App ID</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Customer</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                            <th class="px-4 py-2.5 text-right font-medium text-muted-foreground">Amount</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Branch</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">RM</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Status</th>
+                            <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model)
+                        {
+                            <tr class="border-b last:border-0 hover:bg-muted/30 cursor-pointer transition-colors" onclick="location.href='@Url.Action("Details", new { id = app.Id })'">
+                                <td class="px-4 py-2.5 font-mono text-xs">@app.Id.ToString().Substring(0, 8)</td>
+                                <td class="px-4 py-2.5 font-medium">@app.CustomerName</td>
+                                <td class="px-4 py-2.5">@app.LoanType</td>
+                                <td class="px-4 py-2.5 text-right">৳@string.Format("{0:N0}", double.Parse(app.Amount))</td>
+                                <td class="px-4 py-2.5">@app.Branch</td>
+                                <td class="px-4 py-2.5">@app.RmName</td>
+                                <td class="px-4 py-2.5">
+                                    <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 @LoanStatusHelper.GetVariantClass(LoanStatusHelper.GetVariant(app.Status))">
+                                        @LoanStatusHelper.GetLabel(app.Status)
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2.5 text-muted-foreground">@app.CreatedAt.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+@using SBL.Web.Infrastructure
+@model IEnumerable<SBL.Web.Models.LoanApplicationModel>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="space-y-6 animate-fade-in">
+    <div>
+        <h1 class="text-2xl font-bold tracking-tight">Welcome, @Context.Session.GetString("UserName")</h1>
+        <p class="text-muted-foreground">
+            @Context.Session.GetString("UserRole") — @Context.Session.GetString("BranchName")
+        </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Total Applications -->
+        <div class="rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex items-center gap-4 p-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <i data-lucide="file-text" class="h-6 w-6"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted-foreground">Total Applications</p>
+                    <p class="text-2xl font-bold tracking-tight">@Model.Count()</p>
+                    <p class="text-xs text-muted-foreground">This month</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Review -->
+        <div class="rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex items-center gap-4 p-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-warning/10 text-warning-foreground">
+                    <i data-lucide="clock" class="h-6 w-6"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted-foreground">Pending Review</p>
+                    <p class="text-2xl font-bold tracking-tight">@Model.Count(a => a.Status == SBL.Web.Models.Enums.LoanStatus.Submitted)</p>
+                    <p class="text-xs text-muted-foreground">Awaiting action</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved -->
+        <div class="rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex items-center gap-4 p-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success">
+                    <i data-lucide="check-circle-2" class="h-6 w-6"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted-foreground">Approved</p>
+                    <p class="text-2xl font-bold tracking-tight">@Model.Count(a => a.Status == SBL.Web.Models.Enums.LoanStatus.Approved)</p>
+                    <p class="text-xs text-muted-foreground">This month</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAT -->
+        <div class="rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex items-center gap-4 p-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
+                    <i data-lucide="trending-up" class="h-6 w-6"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted-foreground">Avg. TAT</p>
+                    <p class="text-2xl font-bold tracking-tight">4.2 days</p>
+                    <p class="text-xs text-muted-foreground">Last 30 days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2 rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex flex-row items-center justify-between p-6 pb-3">
+                <h3 class="text-base font-semibold leading-none tracking-tight">Recent Applications</h3>
+                <a asp-controller="Loan" asp-action="Index" class="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 px-3">
+                    View All <i data-lucide="arrow-right" class="ml-1 h-3 w-3"></i>
+                </a>
+            </div>
+            <div class="p-0">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b bg-muted/50">
+                                <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">ID</th>
+                                <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Customer</th>
+                                <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                                <th class="px-4 py-2.5 text-right font-medium text-muted-foreground">Amount</th>
+                                <th class="px-4 py-2.5 text-left font-medium text-muted-foreground">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in Model.Take(5))
+                            {
+                                <tr class="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                                    <td class="px-4 py-2.5 font-mono text-xs">@app.Id.ToString().Substring(0, 8)</td>
+                                    <td class="px-4 py-2.5">@app.CustomerName</td>
+                                    <td class="px-4 py-2.5">@app.LoanType</td>
+                                    <td class="px-4 py-2.5 text-right">৳@string.Format("{0:N0}", double.Parse(app.Amount))</td>
+                                    <td class="px-4 py-2.5">
+                                        <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 @LoanStatusHelper.GetVariantClass(LoanStatusHelper.GetVariant(app.Status))">
+                                            @LoanStatusHelper.GetLabel(app.Status)
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-xl border bg-card text-card-foreground shadow">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-base font-semibold leading-none tracking-tight">Pending Tasks</h3>
+            </div>
+            <div class="p-6 pt-0 space-y-3">
+                <div class="flex items-start gap-3 rounded-md border p-3">
+                    <i data-lucide="alert-triangle" class="mt-0.5 h-4 w-4 shrink-0 text-destructive"></i>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm leading-snug">Review XYZ Traders CIB</p>
+                        <p class="text-xs text-muted-foreground">2 hours ago</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 rounded-md border p-3">
+                    <i data-lucide="alert-triangle" class="mt-0.5 h-4 w-4 shrink-0 text-warning"></i>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm leading-snug">Submit document for ABC Corp</p>
+                        <p class="text-xs text-muted-foreground">5 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

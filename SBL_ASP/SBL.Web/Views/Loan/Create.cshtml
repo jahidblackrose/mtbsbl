@@ -1,0 +1,258 @@
+@model SBL.Web.Models.LoanApplicationModel
+@using SBL.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "New Loan Application";
+}
+
+<div class="mx-auto max-w-3xl space-y-6 animate-fade-in">
+    <div class="flex items-center gap-3">
+        <a asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9 shrink-0">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight">New Loan Application</h1>
+            <p class="text-muted-foreground">Branch: Main Branch &middot; RM: John Doe</p>
+        </div>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="flex items-center gap-2">
+        <div id="step-indicator-0" class="flex items-center gap-2 flex-1">
+            <div class="step-num flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold shrink-0 bg-primary text-primary-foreground">1</div>
+            <span class="step-label text-sm hidden sm:inline font-semibold text-foreground">Loan Details</span>
+            <div class="flex-1 h-px bg-border"></div>
+        </div>
+        <div id="step-indicator-1" class="flex items-center gap-2 flex-1">
+            <div class="step-num flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold shrink-0 bg-muted text-muted-foreground">2</div>
+            <span class="step-label text-sm hidden sm:inline text-muted-foreground">Document Upload</span>
+            <div class="flex-1 h-px bg-border"></div>
+        </div>
+        <div id="step-indicator-2" class="flex items-center gap-2 flex-1">
+            <div class="step-num flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold shrink-0 bg-muted text-muted-foreground">3</div>
+            <span class="step-label text-sm hidden sm:inline text-muted-foreground">Review & Submit</span>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="createForm">
+        <div asp-validation-summary="ModelOnly" class="text-destructive text-sm mb-4"></div>
+
+        <!-- Step 1: Loan Details -->
+        <div id="step-0" class="space-y-6">
+            <div class="rounded-xl border bg-card text-card-foreground shadow">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">Loan Details</h3>
+                    <p class="text-sm text-muted-foreground">Select loan type and provide basic details.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-5">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Loan Type *</label>
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            <input type="radio" asp-for="LoanType" value="@LoanType.SBL" id="loan-sbl" class="hidden peer/sbl" checked />
+                            <label for="loan-sbl" class="rounded-lg border p-3 text-left transition-colors cursor-pointer border-border hover:border-primary/40 peer-checked/sbl:border-primary peer-checked/sbl:bg-primary/5 peer-checked/sbl:ring-2 peer-checked/sbl:ring-primary/20">
+                                <div class="font-semibold text-sm">SBL</div>
+                                <div class="text-xs text-muted-foreground mt-1">Small Business Loan – standard facility</div>
+                            </label>
+
+                            <input type="radio" asp-for="LoanType" value="@LoanType.SBL_PLUS" id="loan-plus" class="hidden peer/plus" />
+                            <label for="loan-plus" class="rounded-lg border p-3 text-left transition-colors cursor-pointer border-border hover:border-primary/40 peer-checked/plus:border-primary peer-checked/plus:bg-primary/5 peer-checked/plus:ring-2 peer-checked/plus:ring-primary/20">
+                                <div class="font-semibold text-sm">SBL Plus</div>
+                                <div class="text-xs text-muted-foreground mt-1">Enhanced SBL with higher limits</div>
+                            </label>
+
+                            <input type="radio" asp-for="LoanType" value="@LoanType.TOP_UP" id="loan-topup" class="hidden peer/topup" />
+                            <label for="loan-topup" class="rounded-lg border p-3 text-left transition-colors cursor-pointer border-border hover:border-primary/40 peer-checked/topup:border-primary peer-checked/topup:bg-primary/5 peer-checked/topup:ring-2 peer-checked/topup:ring-primary/20">
+                                <div class="font-semibold text-sm">Top-up</div>
+                                <div class="text-xs text-muted-foreground mt-1">Additional funding on existing loan</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="CustomerName" class="text-sm font-medium leading-none"></label>
+                        <input asp-for="CustomerName" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="e.g. Rahman Traders" />
+                        <span asp-validation-for="CustomerName" class="text-destructive text-xs"></span>
+                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="space-y-2">
+                            <label asp-for="Amount" class="text-sm font-medium leading-none"></label>
+                            <input asp-for="Amount" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="e.g. 2500000" />
+                            <span asp-validation-for="Amount" class="text-destructive text-xs"></span>
+                        </div>
+                        <div class="space-y-2">
+                            <label asp-for="Tenure" class="text-sm font-medium leading-none"></label>
+                            <input asp-for="Tenure" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="e.g. 36" />
+                            <span asp-validation-for="Tenure" class="text-destructive text-xs"></span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="Purpose" class="text-sm font-medium leading-none"></label>
+                        <textarea asp-for="Purpose" rows="3" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Describe the purpose of this loan facility…"></textarea>
+                        <span asp-validation-for="Purpose" class="text-destructive text-xs"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Document Upload (Mocked for UI Parity) -->
+        <div id="step-1" class="space-y-6 hidden">
+            <div class="rounded-xl border bg-card text-card-foreground shadow">
+                <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">Document Upload</h3>
+                    <p class="text-sm text-muted-foreground">Upload required documents for the application.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-3">
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                        <div class="h-4 w-4 rounded border border-primary shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium">Trade License <span class="text-destructive">*</span></div>
+                        </div>
+                        <button type="button" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3">
+                            <i data-lucide="upload" class="h-3.5 w-3.5 mr-1"></i> Upload
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                        <div class="h-4 w-4 rounded border border-primary shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium">NID / Passport of Borrower <span class="text-destructive">*</span></div>
+                        </div>
+                        <button type="button" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3">
+                            <i data-lucide="upload" class="h-3.5 w-3.5 mr-1"></i> Upload
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                        <div class="h-4 w-4 rounded border border-primary shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium">Bank Statement (12 months) <span class="text-destructive">*</span></div>
+                        </div>
+                        <button type="button" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3">
+                            <i data-lucide="upload" class="h-3.5 w-3.5 mr-1"></i> Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Review & Submit -->
+        <div id="step-2" class="space-y-6 hidden">
+            <div class="rounded-xl border bg-card text-card-foreground shadow">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">Review & Submit</h3>
+                    <p class="text-sm text-muted-foreground">Please review the application details before submitting.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-4">
+                    <div class="grid gap-3 sm:grid-cols-2 text-sm">
+                        <div><span class="text-muted-foreground">Loan Type:</span> <span id="review-loan-type" class="font-medium">SBL</span></div>
+                        <div><span class="text-muted-foreground">Customer:</span> <span id="review-customer" class="font-medium">-</span></div>
+                        <div><span class="text-muted-foreground">Amount:</span> <span id="review-amount" class="font-medium">৳0</span></div>
+                        <div><span class="text-muted-foreground">Tenure:</span> <span id="review-tenure" class="font-medium">0 months</span></div>
+                        <div class="sm:col-span-2"><span class="text-muted-foreground">Purpose:</span> <span id="review-purpose" class="font-medium">-</span></div>
+                        <div><span class="text-muted-foreground">Branch:</span> <span class="font-medium">Main Branch</span></div>
+                        <div><span class="text-muted-foreground">RM:</span> <span class="font-medium">John Doe</span></div>
+                    </div>
+                    <div class="h-px bg-border w-full"></div>
+                    <div>
+                        <h4 class="font-semibold text-sm mb-2">Documents</h4>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 text-sm text-destructive">
+                                <i data-lucide="x" class="h-4 w-4 shrink-0"></i>
+                                <span>No documents uploaded.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mt-8 pt-4 border-t">
+            <button type="button" id="prevBtn" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                Cancel
+            </button>
+            <button type="button" id="nextBtn" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                Next <i data-lucide="arrow-right" class="ml-1 h-4 w-4"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let currentStep = 0;
+        const totalSteps = 3;
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const form = document.getElementById('createForm');
+
+        function updateStep() {
+            // Update visibility
+            for (let i = 0; i < totalSteps; i++) {
+                document.getElementById(`step-${i}`).classList.toggle('hidden', i !== currentStep);
+                
+                const indicator = document.getElementById(`step-indicator-${i}`);
+                const num = indicator.querySelector('.step-num');
+                const label = indicator.querySelector('.step-label');
+
+                if (i < currentStep) {
+                    num.classList.remove('bg-primary', 'text-primary-foreground', 'bg-muted', 'text-muted-foreground');
+                    num.classList.add('bg-success', 'text-success-foreground');
+                    num.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i>';
+                    label.classList.remove('text-muted-foreground', 'font-semibold', 'text-foreground');
+                    label.classList.add('text-muted-foreground');
+                } else if (i === currentStep) {
+                    num.classList.remove('bg-success', 'text-success-foreground', 'bg-muted', 'text-muted-foreground');
+                    num.classList.add('bg-primary', 'text-primary-foreground');
+                    num.innerHTML = i + 1;
+                    label.classList.remove('text-muted-foreground');
+                    label.classList.add('font-semibold', 'text-foreground');
+                } else {
+                    num.classList.remove('bg-success', 'text-success-foreground', 'bg-primary', 'text-primary-foreground');
+                    num.classList.add('bg-muted', 'text-muted-foreground');
+                    num.innerHTML = i + 1;
+                    label.classList.remove('font-semibold', 'text-foreground');
+                    label.classList.add('text-muted-foreground');
+                }
+            }
+            lucide.createIcons();
+
+            // Update Buttons
+            if (currentStep === 0) {
+                prevBtn.innerHTML = 'Cancel';
+                prevBtn.onclick = () => location.href = '@Url.Action("Index")';
+            } else {
+                prevBtn.innerHTML = '<i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back';
+                prevBtn.onclick = () => { currentStep--; updateStep(); };
+            }
+
+            if (currentStep === totalSteps - 1) {
+                nextBtn.innerHTML = '<i data-lucide="check" class="h-4 w-4 mr-1"></i> Submit Application';
+                nextBtn.type = 'submit';
+                nextBtn.onclick = null;
+                
+                // Update Review Data
+                document.getElementById('review-customer').innerText = document.getElementById('CustomerName').value || '-';
+                document.getElementById('review-amount').innerText = '৳' + (Number(document.getElementById('Amount').value).toLocaleString() || '0');
+                document.getElementById('review-tenure').innerText = (document.getElementById('Tenure').value || '0') + ' months';
+                document.getElementById('review-purpose').innerText = document.getElementById('Purpose').value || '-';
+                
+                const selectedType = document.querySelector('input[name="LoanType"]:checked');
+                document.getElementById('review-loan-type').innerText = selectedType ? selectedType.nextElementSibling.querySelector('.font-semibold').innerText : 'SBL';
+            } else {
+                nextBtn.innerHTML = 'Next <i data-lucide="arrow-right" class="ml-1 h-4 w-4"></i>';
+                nextBtn.type = 'button';
+                nextBtn.onclick = () => { 
+                    if (currentStep === 0) {
+                        // Simple validation for Step 1
+                        if (!document.getElementById('CustomerName').value || !document.getElementById('Amount').value) {
+                             alert('Please fill the required fields.');
+                             return;
+                        }
+                    }
+                    currentStep++; 
+                    updateStep(); 
+                };
+            }
+            lucide.createIcons();
+        }
+
+        updateStep();
+    </script>
+}

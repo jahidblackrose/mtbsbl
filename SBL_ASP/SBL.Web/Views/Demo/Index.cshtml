@@ -1,0 +1,211 @@
+@model SBL.Web.Models.ViewModels.DemoViewModel
+@{
+    var tableData = ViewBag.TableData as List<SBL.Web.Models.ViewModels.DemoDataModel>;
+}
+
+<div class="space-y-4 md:space-y-6 animate-fade-in pb-10">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-slate-200 pb-4">
+        <div>
+            <h1 class="text-xl font-bold tracking-tight text-slate-900">Component Standards</h1>
+            <p class="text-slate-500 text-[10px] font-semibold uppercase tracking-widest mt-0.5">SBL Banking UI Kit</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="MTBToast.success('Success notification triggered.')" class="inline-flex items-center justify-center rounded-lg text-[10px] font-semibold uppercase tracking-widest border border-emerald-200 bg-emerald-50 text-emerald-700 h-9 px-3 shadow-sm active:scale-95 transition-all">
+                <i data-lucide="check-circle" class="mr-1.5 h-3.5 w-3.5"></i> Success
+            </button>
+            <button type="button" onclick="MTBToast.error('Error notification triggered.')" class="inline-flex items-center justify-center rounded-lg text-[10px] font-semibold uppercase tracking-widest border border-red-200 bg-red-50 text-red-700 h-9 px-3 shadow-sm active:scale-95 transition-all">
+                <i data-lucide="alert-circle" class="mr-1.5 h-3.5 w-3.5"></i> Error
+            </button>
+            <button type="button" onclick="showLoaderDemo()" class="inline-flex items-center justify-center rounded-lg text-[10px] font-semibold uppercase tracking-widest bg-slate-900 text-white h-9 px-3 shadow-lg active:scale-95 transition-all">
+                <i data-lucide="loader-2" class="mr-1.5 h-3.5 w-3.5"></i> Loader
+            </button>
+        </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+        <!-- Form -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div class="p-4 border-b bg-slate-50/50">
+                    <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Input Validation & Controls
+                    </h3>
+                </div>
+                <div class="p-4 md:p-6 space-y-4 md:space-y-5">
+                    <form asp-action="Index" method="post" id="demoForm" enctype="multipart/form-data" class="space-y-4 md:space-y-5">
+                        @Html.AntiForgeryToken()
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label asp-for="FullName" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1"></label>
+                                <input asp-for="FullName" class="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2 text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" placeholder="e.g. John Doe" />
+                                <span asp-validation-for="FullName" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label asp-for="Email" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1"></label>
+                                <input asp-for="Email" type="email" class="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2 text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" placeholder="name@bank.com" />
+                                <span asp-validation-for="Email" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+                        </div>
+
+                        <!-- Selects Row -->
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label asp-for="PrimaryBranch" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1">Searchable Select (Select2 style)</label>
+                                <select asp-for="PrimaryBranch" id="ts-select" class="w-full font-medium">
+                                    <option value="">Search and Select...</option>
+                                    <option value="Main">Main Branch - Dhaka</option>
+                                    <option value="Gulshan">Gulshan Branch - Dhaka</option>
+                                    <option value="Dhanmondi">Dhanmondi Branch - Dhaka</option>
+                                    <option value="Banani">Banani Branch</option>
+                                </select>
+                                <span asp-validation-for="PrimaryBranch" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label asp-for="AccountType" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1">Normal Select Box</label>
+                                <select asp-for="AccountType" class="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium cursor-pointer">
+                                    <option value="">Choose Option...</option>
+                                    <option value="Savings">Savings Account</option>
+                                    <option value="Current">Current Account</option>
+                                </select>
+                                <span asp-validation-for="AccountType" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+                        </div>
+
+                        <!-- Date & Mobile -->
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label asp-for="DateOfBirth" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1">User-Friendly Date Picker</label>
+                                <div class="relative font-medium">
+                                    <input asp-for="DateOfBirth" type="text" id="fp-date" class="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2 text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all cursor-pointer font-medium" placeholder="YYYY-MM-DD" readonly />
+                                    <i data-lucide="calendar" class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300"></i>
+                                </div>
+                                <span asp-validation-for="DateOfBirth" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label asp-for="MobileNumber" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1">Mobile Contact</label>
+                                <div class="relative font-medium">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold border-r pr-2">+880</span>
+                                    <input asp-for="MobileNumber" class="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-16 pr-4 py-2 text-sm focus:bg-white outline-none transition-all font-medium" placeholder="17XXXXXXXX" />
+                                </div>
+                                <span asp-validation-for="MobileNumber" class="text-red-500 text-[10px] font-semibold"></span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-50">
+                            <button type="reset" class="px-6 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Discard</button>
+                            <button type="button" id="sub-btn" class="bg-primary text-white px-10 py-3 rounded-xl text-[10px] font-semibold uppercase tracking-widest shadow-xl shadow-primary/20 active:scale-95 flex items-center transition-all">
+                                <span id="sub-text">Save Transaction</span>
+                                <i id="sub-spin" data-lucide="loader-2" class="w-4 h-4 ml-3 animate-spin hidden"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="space-y-6">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div class="p-4 border-b bg-slate-50/50 flex items-center justify-between">
+                    <h3 class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Live Feed</h3>
+                    <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                </div>
+                <div class="p-3 border-b bg-white">
+                    <div class="relative">
+                        <input type="text" id="dtSearch" class="w-full h-9 pl-9 pr-4 text-xs rounded-lg border border-slate-100 bg-slate-50 focus:bg-white outline-none transition-all font-medium" placeholder="Quick search..." />
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-300"></i>
+                    </div>
+                </div>
+                <div class="p-0 max-h-[400px] overflow-y-auto font-medium">
+                    <table class="w-full text-xs" id="demoDataTable">
+                        <tbody class="divide-y divide-slate-50">
+                            @foreach (var item in tableData!)
+                            {
+                                <tr class="hover:bg-primary/[0.02] transition-colors group">
+                                    <td class="p-4">
+                                        <div class="font-semibold text-slate-900 text-sm">@item.Name</div>
+                                        <div class="text-[10px] text-slate-400 font-medium">@item.Email</div>
+                                    </td>
+                                    <td class="p-4 text-right">
+                                        <button class="p-2 hover:bg-slate-50 rounded-lg text-primary opacity-0 group-hover:opacity-100 transition-all"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="cnf-modal" class="hidden fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden border">
+        <div class="p-10 text-center">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-6 ring-8 ring-primary/5">
+                <i data-lucide="help-circle" class="h-8 w-8 text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 tracking-tight">Confirm Save?</h3>
+            <p class="text-sm text-slate-500 mt-3 leading-relaxed font-medium">Please verify all data before committing to the secure database.</p>
+        </div>
+        <div class="flex border-t divide-x">
+            <button onclick="clsMod()" class="flex-1 px-4 py-5 text-[10px] font-semibold text-slate-400 hover:bg-slate-50 uppercase tracking-widest">Go Back</button>
+            <button onclick="fnlSub()" class="flex-1 px-4 py-5 text-[10px] font-semibold text-primary hover:bg-white uppercase tracking-widest transition-all">Confirm & Save</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // 1. Tom Select
+            new TomSelect("#ts-select", {
+                create: false,
+                sortField: { field: "text", direction: "asc" }
+            });
+
+            // 2. User-Friendly Date Picker (YEAR DROP-DOWN ENABLED)
+            flatpickr("#fp-date", window.MTBFlatpickrConfig);
+        });
+
+        const form = document.getElementById('demoForm');
+        const sBtn = document.getElementById('sub-btn');
+        const sText = document.getElementById('sub-text');
+        const sSpin = document.getElementById('sub-spin');
+        const mod = document.getElementById('cnf-modal');
+
+        function clsMod() { mod.classList.add('hidden'); }
+        sBtn.addEventListener('click', () => {
+            if(form.checkValidity()) mod.classList.remove('hidden');
+            else {
+                MTBToast.error("Please correct the form errors.");
+                form.reportValidity();
+            }
+        });
+
+        function fnlSub() {
+            clsMod();
+            sBtn.disabled = true;
+            sBtn.classList.add('opacity-70');
+            sText.innerText = "Authenticating Transaction...";
+            sSpin.classList.remove('hidden');
+            lucide.createIcons();
+            MTBLoader.show();
+            setTimeout(() => form.submit(), 1000);
+        }
+
+        document.getElementById('dtSearch').addEventListener('input', (e) => {
+            const f = e.target.value.toLowerCase();
+            document.querySelectorAll('#demoDataTable tbody tr').forEach(r => r.style.display = r.innerText.toLowerCase().includes(f) ? '' : 'none');
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
