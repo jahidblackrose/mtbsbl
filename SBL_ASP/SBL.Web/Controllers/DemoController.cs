@@ -1,10 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using SBL.Web.Models.ViewModels;
+using SBL.Web.Services;
 
 namespace SBL.Web.Controllers;
 
 public class DemoController : Controller
 {
+    private readonly IPdfService _pdfService;
+
+    public DemoController(IPdfService pdfService)
+    {
+        _pdfService = pdfService;
+    }
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -33,6 +41,20 @@ public class DemoController : Controller
         ViewBag.TableData = GetMockData();
         TempData["ErrorMessage"] = "There were errors in your submission. Please correct them and try again.";
         return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult GeneratePdf(string customerName, string amount, string branch, string purpose)
+    {
+        customerName ??= "Valued Customer";
+        amount ??= "0.00";
+        branch ??= "Main";
+        purpose ??= "Loan Application";
+
+        byte[] pdfBytes = _pdfService.GenerateApplicationLetter(customerName, amount, branch, purpose);
+        
+        // Return file for preview/download
+        return File(pdfBytes, "application/pdf");
     }
 
     private List<DemoDataModel> GetMockData()

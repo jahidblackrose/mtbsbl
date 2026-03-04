@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MTB Loan Portal</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind Output -->
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <!-- Modern UI Component Libraries -->
@@ -15,7 +19,7 @@
     <script src="https://unpkg.com/lucide@0.477.0/dist/umd/lucide.min.js"></script>
     <style>
         /* Sidebar transition */
-        #sidebar { transition: transform 0.3s ease, width 0.3s ease; }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -24,10 +28,11 @@
         
         /* Flatpickr Year Selection Improvement */
         .flatpickr-calendar .numInputWrapper span { display: block !important; opacity: 1 !important; }
-        .flatpickr-current-month .numInputWrapper input.cur-year { font-weight: 600 !important; }
+        .flatpickr-current-month .numInputWrapper input.cur-year { font-weight: 400 !important; cursor: pointer; }
+        .flatpickr-monthDropdown-months, .flatpickr-monthDropdown-month { font-weight: 400 !important; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-primary/10 selection:text-primary">
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-primary/10 selection:text-primary font-normal">
     <!-- Full Page Loader -->
     <div id="globalLoader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="flex flex-col items-center gap-3">
@@ -50,7 +55,7 @@
             </button>
 
             <div class="flex items-center gap-2">
-                <span class="text-xl font-bold tracking-tighter text-primary">MTB</span>
+                <img src="~/images/logo.jpeg" alt="MTB Logo" class="h-8 w-auto rounded-lg shadow-sm" />
                 <span class="hidden text-[10px] font-semibold text-slate-800 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
                     Banking Portal
                 </span>
@@ -90,6 +95,11 @@
                         <i data-lucide="component" class="h-4 w-4 shrink-0"></i>
                         <span>Component Demo</span>
                     </a>
+                    <a asp-controller="Templates" asp-action="Index" 
+                       class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Templates" ? "bg-sidebar-accent text-sidebar-primary shadow-md" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")">
+                        <i data-lucide="layout-template" class="h-4 w-4 shrink-0"></i>
+                        <span>UI Templates</span>
+                    </a>
                     <a asp-controller="Account" asp-action="Profile" 
                        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-all @(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "bg-sidebar-accent text-sidebar-primary shadow-md" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")">
                         <i data-lucide="user-circle" class="h-4 w-4 shrink-0"></i>
@@ -128,6 +138,15 @@
 
     <script>
         lucide.createIcons();
+
+        // Standard Flatpickr Config for year/month dropdowns
+        window.MTBFlatpickrConfig = {
+            dateFormat: "Y-m-d",
+            monthSelectorType: "dropdown",
+            static: true,
+            disableMobile: true,
+            animate: true
+        };
 
         // 1. Loader Control
         window.MTBLoader = {

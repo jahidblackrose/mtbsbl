@@ -28,6 +28,8 @@ builder.Services.AddSession(options =>
 });
 
 // Register Banking Services
+builder.Services.AddScoped<IPdfService, PdfService>();
+
 builder.Services.AddHttpClient<IAuthService, AuthApiService>(client =>
 {
     var baseUrl = builder.Configuration["AuthApiSettings:BaseUrl"] ?? "https://10.45.6.38/KrishiRinAPI/plapplication/";

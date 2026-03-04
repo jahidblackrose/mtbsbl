@@ -75,3 +75,17 @@ Constraints:
 - Explain decisions like an enterprise architect.
 - Avoid demo-level shortcuts.
 - Assume system will serve 1M+ users.
+
+
+
+
+
+* Shadcn UI (Design Inspiration): The overall "look and feel" (clean borders, rounded-xl corners, specific HSL
+     variables) is inspired by ui.shadcn.com (https://ui.shadcn.com/). It is currently the most popular standard for
+     modern enterprise dashboards.
+   * Readymade UI (Login Layout): The sophisticated 2-column login layout was adapted from readymadeui.com
+     (https://readymadeui.com/), which provides high-quality tailwind components.
+   * Tailwind UI: Many of the sidebar and dashboard card patterns follow the official tailwindui.com
+     (https://tailwindui.com/) enterprise application standards.
+   * Lucide Icons: All iconography is powered by lucide.dev (https://lucide.dev/), providing sharp, consistent vector
+     icons.

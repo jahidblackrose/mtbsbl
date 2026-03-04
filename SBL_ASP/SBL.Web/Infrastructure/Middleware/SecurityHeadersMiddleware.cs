@@ -15,8 +15,8 @@ public class SecurityHeadersMiddleware
         context.Response.Headers.Remove("Server");
         context.Response.Headers.Remove("X-Powered-By");
 
-        // Prevent Clickjacking
-        context.Response.Headers.Append("X-Frame-Options", "DENY");
+        // Prevent Clickjacking (Allow SAMEORIGIN for internal PDF preview)
+        context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
         
         // Prevent MIME type sniffing
         context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
@@ -31,7 +31,7 @@ public class SecurityHeadersMiddleware
             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
             "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; " +
             "img-src 'self' data: https://readymadeui.com https://cdn.jsdelivr.net; " +
-            "frame-ancestors 'none'; " +
+            "frame-ancestors 'self'; " +
             "form-action 'self';");
 
         // Referrer Policy
