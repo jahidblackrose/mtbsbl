@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 import type { User } from "@/types/auth";
 import { loginUser, logoutUser } from "@/api/auth.api";
 
+// Auth context for the application
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
