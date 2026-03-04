@@ -1,3 +1,10 @@
+/**
+ * Loan Application Data Models
+ * ==============================
+ * All loan-related DTOs and enumerations.
+ * IMPORTANT: All monetary amounts are STRING (fintech compliance).
+ */
+
 export type LoanType = "SBL" | "SBL_PLUS" | "TOP_UP";
 
 export type LoanStatus =
@@ -53,16 +60,54 @@ export const LOAN_STATUS_VARIANT: Record<LoanStatus, string> = {
   closed: "secondary",
 };
 
-export interface LoanApplication {
+export const LOAN_TYPE_LABELS: Record<LoanType, string> = {
+  SBL: "SBL",
+  SBL_PLUS: "SBL Plus",
+  TOP_UP: "Top-up",
+};
+
+/** Summary row used in lists and tables */
+export interface LoanApplicationSummary {
   id: string;
-  customerId: string;
   customerName: string;
   loanType: LoanType;
-  amount: number;
-  tenure: number;
+  /** Formatted display amount, e.g. "৳25,00,000" */
+  amount: string;
   status: LoanStatus;
   branch: string;
-  createdAt: string;
-  updatedAt: string;
   rmName: string;
+  date: string;
+}
+
+/** Full detail view of a single application */
+export interface LoanApplicationDetail {
+  id: string;
+  customerName: string;
+  loanType: string;
+  /** Formatted display amount */
+  amount: string;
+  tenure: string;
+  purpose: string;
+  status: LoanStatus;
+  branch: string;
+  rmName: string;
+  createdAt: string;
+  documents: ApplicationDocument[];
+}
+
+export interface ApplicationDocument {
+  name: string;
+  uploaded: boolean;
+}
+
+/** Payload for creating a new loan application */
+export interface CreateLoanApplicationRequest {
+  loanType: LoanType;
+  customerName: string;
+  /** Raw numeric string, e.g. "2500000" */
+  amount: string;
+  /** Tenure in months as string */
+  tenure: string;
+  purpose: string;
+  documentIds: string[];
 }
