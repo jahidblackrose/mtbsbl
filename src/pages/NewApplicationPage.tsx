@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { getDocumentChecklist, type DocumentItem } from "@/types/document-checklist";
+import { createApplication } from "@/api/applications.api";
 import type { LoanType } from "@/types/loan";
 import { ArrowLeft, ArrowRight, Check, Upload, FileText, X } from "lucide-react";
 
@@ -27,21 +27,16 @@ const NewApplicationPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Step state
   const [step, setStep] = useState(0);
-
-  // Form fields
   const [loanType, setLoanType] = useState<LoanType | "">("");
   const [customerName, setCustomerName] = useState("");
   const [amount, setAmount] = useState("");
   const [tenure, setTenure] = useState("");
   const [purpose, setPurpose] = useState("");
-
-  // Document checklist
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, File | null>>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  // When loan type changes, rebuild checklist
   const handleLoanTypeChange = (value: string) => {
     setLoanType(value as LoanType);
     setDocuments(getDocumentChecklist(value));
@@ -68,14 +63,29 @@ const NewApplicationPage = () => {
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 0));
 
-  const handleSubmit = () => {
-    toast({ title: "Application Submitted", description: `Loan application for ${customerName} has been submitted successfully.` });
-    navigate("/applications");
+  const handleSubmit = async () => {
+    if (!loanType) return;
+    setSubmitting(true);
+    const response = await createApplication({
+      loanType: loanType as LoanType,
+      customerName,
+      amount,
+      tenure,
+      purpose,
+      documentIds: Object.keys(uploadedFiles).filter((k) => uploadedFiles[k]),
+    });
+    setSubmitting(false);
+
+    if (response.status === 200) {
+      toast({ title: "Application Submitted", description: response.message });
+      navigate("/applications");
+    } else {
+      toast({ title: "Submission Failed", description: response.message, variant: "destructive" });
+    }
   };
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate("/applications")}>
           <ArrowLeft className="h-4 w-4" />
@@ -101,7 +111,7 @@ const NewApplicationPage = () => {
         ))}
       </div>
 
-      {/* Step 1: Loan Details */}
+      {/* Step 1 */}
       {step === 0 && (
         <Card>
           <CardHeader>
@@ -109,35 +119,22 @@ const NewApplicationPage = () => {
             <CardDescription>Select loan type and provide basic details.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            {/* Loan Type */}
             <div className="space-y-2">
               <Label>Loan Type *</Label>
               <div className="grid gap-3 sm:grid-cols-3">
                 {LOAN_TYPE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => handleLoanTypeChange(opt.value)}
-                    className={`rounded-lg border p-3 text-left transition-colors ${
-                      loanType === opt.value
-                        ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                        : "border-border hover:border-primary/40"
-                    }`}
-                  >
+                  <button key={opt.value} type="button" onClick={() => handleLoanTypeChange(opt.value)}
+                    className={`rounded-lg border p-3 text-left transition-colors ${loanType === opt.value ? "border-primary bg-primary/5 ring-2 ring-primary/20" : "border-border hover:border-primary/40"}`}>
                     <div className="font-semibold text-sm">{opt.label}</div>
                     <div className="text-xs text-muted-foreground mt-1">{opt.description}</div>
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Customer Name */}
             <div className="space-y-2">
               <Label htmlFor="customer">Customer / Business Name *</Label>
               <Input id="customer" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="e.g. Rahman Traders" />
             </div>
-
-            {/* Amount & Tenure */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="amount">Loan Amount (BDT) *</Label>
@@ -148,8 +145,6 @@ const NewApplicationPage = () => {
                 <Input id="tenure" type="number" value={tenure} onChange={(e) => setTenure(e.target.value)} placeholder="e.g. 36" />
               </div>
             </div>
-
-            {/* Purpose */}
             <div className="space-y-2">
               <Label htmlFor="purpose">Purpose of Loan *</Label>
               <Textarea id="purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="Describe the purpose of this loan facility…" rows={3} />
@@ -158,7 +153,7 @@ const NewApplicationPage = () => {
         </Card>
       )}
 
-      {/* Step 2: Document Upload */}
+      {/* Step 2 */}
       {step === 1 && (
         <Card>
           <CardHeader>
@@ -199,10 +194,7 @@ const NewApplicationPage = () => {
                     <Button size="sm" variant="outline" asChild>
                       <label className="cursor-pointer">
                         <Upload className="h-3.5 w-3.5 mr-1" /> Upload
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept=".pdf,.jpg,.jpeg,.png,.docx"
+                        <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png,.docx"
                           onChange={(e) => {
                             const f = e.target.files?.[0] || null;
                             if (f && f.size > 5 * 1024 * 1024) {
@@ -223,7 +215,7 @@ const NewApplicationPage = () => {
         </Card>
       )}
 
-      {/* Step 3: Review & Submit */}
+      {/* Step 3 */}
       {step === 2 && (
         <Card>
           <CardHeader>
@@ -240,9 +232,7 @@ const NewApplicationPage = () => {
               <div><span className="text-muted-foreground">Branch:</span> <span className="font-medium">{user?.branch || "Head Office"}</span></div>
               <div><span className="text-muted-foreground">RM:</span> <span className="font-medium">{user?.name}</span></div>
             </div>
-
             <Separator />
-
             <div>
               <h4 className="font-semibold text-sm mb-2">Documents ({Object.values(uploadedFiles).filter(Boolean).length}/{documents.length})</h4>
               <div className="space-y-1">
@@ -250,11 +240,7 @@ const NewApplicationPage = () => {
                   const file = uploadedFiles[doc.id];
                   return (
                     <div key={doc.id} className="flex items-center gap-2 text-sm">
-                      {file ? (
-                        <Check className="h-4 w-4 text-success shrink-0" />
-                      ) : (
-                        <X className={`h-4 w-4 shrink-0 ${doc.required ? "text-destructive" : "text-muted-foreground"}`} />
-                      )}
+                      {file ? <Check className="h-4 w-4 text-success shrink-0" /> : <X className={`h-4 w-4 shrink-0 ${doc.required ? "text-destructive" : "text-muted-foreground"}`} />}
                       <span className={file ? "" : doc.required ? "text-destructive" : "text-muted-foreground"}>{doc.label}</span>
                     </div>
                   );
@@ -265,18 +251,15 @@ const NewApplicationPage = () => {
         </Card>
       )}
 
-      {/* Navigation buttons */}
       <div className="flex justify-between">
         <Button variant="outline" onClick={step === 0 ? () => navigate("/applications") : handleBack}>
           {step === 0 ? "Cancel" : <><ArrowLeft className="h-4 w-4 mr-1" /> Back</>}
         </Button>
         {step < STEPS.length - 1 ? (
-          <Button onClick={handleNext}>
-            Next <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
+          <Button onClick={handleNext}>Next <ArrowRight className="h-4 w-4 ml-1" /></Button>
         ) : (
-          <Button onClick={handleSubmit}>
-            <Check className="h-4 w-4 mr-1" /> Submit Application
+          <Button onClick={handleSubmit} disabled={submitting}>
+            <Check className="h-4 w-4 mr-1" /> {submitting ? "Submitting…" : "Submit Application"}
           </Button>
         )}
       </div>

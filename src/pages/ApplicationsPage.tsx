@@ -1,46 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "@/components/common/StatusBadge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { LoanStatus, LoanType } from "@/types/loan";
+import { LOAN_TYPE_LABELS } from "@/types/loan";
+import type { LoanApplicationSummary } from "@/types/loan";
+import { fetchApplications } from "@/api/applications.api";
 import { Plus, Search } from "lucide-react";
-
-interface MockApp {
-  id: string;
-  customer: string;
-  type: LoanType;
-  amount: string;
-  status: LoanStatus;
-  branch: string;
-  rm: string;
-  date: string;
-}
-
-const MOCK_APPS: MockApp[] = [
-  { id: "APP-2024-001", customer: "Rahman Traders", type: "SBL", amount: "৳25,00,000", status: "under_review", branch: "Gulshan", rm: "Karim Ahmed", date: "2024-12-10" },
-  { id: "APP-2024-002", customer: "Alam Garments", type: "SBL_PLUS", amount: "৳50,00,000", status: "cib_pending", branch: "Motijheel", rm: "Karim Ahmed", date: "2024-12-09" },
-  { id: "APP-2024-003", customer: "Hasan Enterprise", type: "TOP_UP", amount: "৳10,00,000", status: "approved", branch: "Gulshan", rm: "Rafiq Hasan", date: "2024-12-08" },
-  { id: "APP-2024-004", customer: "Karim Motors", type: "SBL", amount: "৳35,00,000", status: "query_raised", branch: "Dhanmondi", rm: "Karim Ahmed", date: "2024-12-07" },
-  { id: "APP-2024-005", customer: "Fatima Foods", type: "SBL_PLUS", amount: "৳40,00,000", status: "sanction_generated", branch: "Gulshan", rm: "Rafiq Hasan", date: "2024-12-06" },
-  { id: "APP-2024-006", customer: "Noor Textiles", type: "SBL", amount: "৳15,00,000", status: "disbursed", branch: "Chittagong", rm: "Karim Ahmed", date: "2024-12-05" },
-  { id: "APP-2024-007", customer: "Star Electronics", type: "TOP_UP", amount: "৳8,00,000", status: "draft", branch: "Gulshan", rm: "Karim Ahmed", date: "2024-12-04" },
-];
-
-const LOAN_TYPE_LABELS: Record<LoanType, string> = { SBL: "SBL", SBL_PLUS: "SBL Plus", TOP_UP: "Top-up" };
 
 const ApplicationsPage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [applications, setApplications] = useState<LoanApplicationSummary[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = MOCK_APPS.filter((app) => {
-    const matchSearch = !search || app.customer.toLowerCase().includes(search.toLowerCase()) || app.id.toLowerCase().includes(search.toLowerCase());
+  useEffect(() => {
+    fetchApplications().then((res) => {
+      if (res.status === 200 && res.data) {
+        setApplications(res.data);
+      } else {
+        setError(res.message);
+      }
+    });
+  }, []);
+
+  const filtered = applications.filter((app) => {
+    const matchSearch = !search || app.customerName.toLowerCase().includes(search.toLowerCase()) || app.id.toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "all" || app.status === statusFilter;
     return matchSearch && matchStatus;
   });
+
+  if (error) {
+    return <div className="p-6 text-destructive">{error}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -59,12 +54,7 @@ const ApplicationsPage = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search by ID or customer…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
+              <Input placeholder="Search by ID or customer…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-44">
@@ -103,11 +93,11 @@ const ApplicationsPage = () => {
                 {filtered.map((app) => (
                   <tr key={app.id} className="border-b last:border-0 hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => navigate(`/applications/${app.id}`)}>
                     <td className="px-4 py-2.5 font-mono text-xs">{app.id}</td>
-                    <td className="px-4 py-2.5 font-medium">{app.customer}</td>
-                    <td className="px-4 py-2.5">{LOAN_TYPE_LABELS[app.type]}</td>
+                    <td className="px-4 py-2.5 font-medium">{app.customerName}</td>
+                    <td className="px-4 py-2.5">{LOAN_TYPE_LABELS[app.loanType]}</td>
                     <td className="px-4 py-2.5 text-right">{app.amount}</td>
                     <td className="px-4 py-2.5">{app.branch}</td>
-                    <td className="px-4 py-2.5">{app.rm}</td>
+                    <td className="px-4 py-2.5">{app.rmName}</td>
                     <td className="px-4 py-2.5"><StatusBadge status={app.status} /></td>
                     <td className="px-4 py-2.5 text-muted-foreground">{app.date}</td>
                   </tr>
