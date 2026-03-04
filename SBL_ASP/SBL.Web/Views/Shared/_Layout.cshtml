@@ -51,7 +51,7 @@
 
             <div class="flex items-center gap-2">
                 <span class="text-xl font-bold tracking-tighter text-primary">MTB</span>
-                <span class="hidden text-[10px] font-semibold text-slate-400 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
+                <span class="hidden text-[10px] font-semibold text-slate-800 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
                     Banking Portal
                 </span>
             </div>
@@ -64,12 +64,12 @@
                     </div>
                     <div class="hidden text-left md:block">
                         <p class="text-[11px] font-semibold leading-none text-slate-900">@Context.Session.GetString("UserName")</p>
-                        <p class="text-[9px] text-slate-400 mt-0.5 uppercase font-medium tracking-tighter">@Context.Session.GetString("UserRole")</p>
+                        <p class="text-[9px] text-slate-800 mt-0.5 uppercase font-medium tracking-tighter">@Context.Session.GetString("UserRole")</p>
                     </div>
                 </a>
                 
                 <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="ms-1">
-                    <button type="submit" class="p-2 text-slate-400 hover:text-red-500 transition-all" title="Logout">
+                    <button type="submit" class="p-2 text-slate-800 hover:text-red-500 transition-all" title="Logout">
                         <i data-lucide="log-out" class="h-4 w-4"></i>
                     </button>
                 </form>
