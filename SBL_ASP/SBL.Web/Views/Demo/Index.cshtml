@@ -263,7 +263,8 @@
         function getPdfUrl() {
             const name = encodeURIComponent(document.getElementById('pdfCustName').value);
             const amount = encodeURIComponent(document.getElementById('pdfAmount').value);
-            return `/Demo/GeneratePdf?customerName=${name}&amount=${amount}&branch=Main&purpose=Business Expansion`;
+            const baseUrl = '@Url.Action("GeneratePdf", "Demo")';
+            return `${baseUrl}?customerName=${name}&amount=${amount}&branch=Main&purpose=Business Expansion`;
         }
 
         function previewPdf() {

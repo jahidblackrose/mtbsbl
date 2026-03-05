@@ -24,13 +24,14 @@ public class SecurityHeadersMiddleware
         // Anti-XSS Header for older browsers
         context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
 
-        // Content Security Policy (Hardened)
+        // Content Security Policy (Strict - Local Only)
         context.Response.Headers.Append("Content-Security-Policy", 
             "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; " +
-            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
-            "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; " +
-            "img-src 'self' data: https://readymadeui.com https://cdn.jsdelivr.net; " +
+            "script-src 'self' 'unsafe-inline'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "font-src 'self' data:; " +
+            "img-src 'self' data:; " +
+            "connect-src 'self' https://api.mtb-sbl.example.com https://10.45.6.38 https://localhost:5001; " +
             "frame-ancestors 'self'; " +
             "form-action 'self';");
 
