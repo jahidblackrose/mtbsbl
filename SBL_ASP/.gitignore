@@ -20,7 +20,6 @@ _ReSharper*/
 *.suo
 *.user
 *.userosscache
-*.sln.docuser
 
 # --- Node.js ---
 node_modules/
@@ -41,7 +40,6 @@ bun.lockb
 .env.development
 .env.production
 .env.local
-appsettings.json
 # Note: appsettings.json is often kept for structure, but secrets should be in User Secrets or Environment Variables
 
 # --- OS Specific ---
