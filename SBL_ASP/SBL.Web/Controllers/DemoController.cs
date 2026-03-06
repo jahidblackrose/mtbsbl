@@ -57,15 +57,34 @@ public class DemoController : Controller
         return File(pdfBytes, "application/pdf");
     }
 
+    [HttpGet]
+    public IActionResult GenerateMultiPagePdf(string customerName)
+    {
+        customerName ??= "Valued Customer";
+        string applicationId = "APP-" + DateTime.Now.Ticks.ToString().Substring(10);
+        byte[] pdfBytes = _pdfService.GenerateMultiPageApplication(applicationId, customerName);
+        return File(pdfBytes, "application/pdf", $"Full_Application_{applicationId}.pdf");
+    }
+
     private List<DemoDataModel> GetMockData()
     {
-        return new List<DemoDataModel>
+        var data = new List<DemoDataModel>();
+        string[] names = { "Ahmed Ali", "Sara Khan", "Rahim Uddin", "Karim Baksh", "Fatima Begum", "Zayan Malik", "Nadia Hasan", "Tanvir Ahmed", "Ishrat Jahan", "Omar Faruk" };
+        string[] statuses = { "Active", "Pending", "Inactive", "On Hold" };
+        var rand = new Random();
+
+        for (int i = 1; i <= 50; i++)
         {
-            new DemoDataModel { Id = 101, Name = "Ahmed Ali", Email = "ahmed@example.com", Status = "Active", Date = DateTime.Now.AddDays(-5) },
-            new DemoDataModel { Id = 102, Name = "Sara Khan", Email = "sara@example.com", Status = "Pending", Date = DateTime.Now.AddDays(-2) },
-            new DemoDataModel { Id = 103, Name = "Rahim Uddin", Email = "rahim@example.com", Status = "Inactive", Date = DateTime.Now.AddDays(-10) },
-            new DemoDataModel { Id = 104, Name = "Karim Baksh", Email = "karim@example.com", Status = "Active", Date = DateTime.Now.AddDays(-1) },
-            new DemoDataModel { Id = 105, Name = "Fatima Begum", Email = "fatima@example.com", Status = "Active", Date = DateTime.Now }
-        };
+            var name = names[rand.Next(names.Length)];
+            data.Add(new DemoDataModel 
+            { 
+                Id = 1000 + i, 
+                Name = $"{name} {i}", 
+                Email = $"{name.ToLower().Replace(" ", ".")}@example.com", 
+                Status = statuses[rand.Next(statuses.Length)], 
+                Date = DateTime.Now.AddDays(-rand.Next(1, 30)) 
+            });
+        }
+        return data;
     }
 }

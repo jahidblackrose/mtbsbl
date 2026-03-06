@@ -33,7 +33,7 @@
         .flatpickr-monthDropdown-months, .flatpickr-monthDropdown-month { font-weight: 400 !important; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-primary/10 selection:text-primary font-normal">
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 font-normal">
     <!-- Full Page Loader -->
     <div id="globalLoader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="flex flex-col items-center gap-3">
@@ -58,7 +58,7 @@
             <div class="flex items-center gap-2">
                 <img src="~/images/logo.jpeg" alt="MTB Logo" class="h-8 w-auto rounded-lg shadow-sm" />
                 <span class="hidden text-[10px] font-semibold text-slate-800 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
-                    Banking Portal
+                    SBL/SBL PLUS Application Portal
                 </span>
             </div>
 
@@ -75,7 +75,7 @@
                 </a>
                 
                 <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="ms-1">
-                    <button type="submit" class="p-2 text-slate-800 hover:text-red-500 transition-all" title="Logout">
+                    <button type="submit" class="p-2 text-red-500 hover:text-red-600 transition-all" title="Logout">
                         <i data-lucide="log-out" class="h-4 w-4"></i>
                     </button>
                 </form>

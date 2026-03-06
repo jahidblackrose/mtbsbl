@@ -99,6 +99,37 @@ public class AccountController : Controller
         return View();
     }
 
+    [HttpGet]
+    public IActionResult Conversation(string appId)
+    {
+        if (HttpContext.Session.GetString("JWTToken") == null)
+        {
+            return RedirectToAction("Login");
+        }
+
+        ViewData["Title"] = "Conversation Hub";
+        ViewData["AppId"] = appId; // Store appId for the back button
+        
+        var userName = HttpContext.Session.GetString("UserName") ?? "Branch User";
+        var userDept = HttpContext.Session.GetString("UserRole") ?? "Branch";
+
+        var model = new ConversationViewModel
+        {
+            OtherUserName = "Rahat Ahmed",
+            OtherUserDept = "CAD Admin",
+            Messages = new List<ChatMessage>
+            {
+                new() { SenderName = "Rahat Ahmed", SenderDept = "CAD Admin", Message = $"Hello, regarding application {appId ?? "APP-2024-001"}. Some documents are missing.", Timestamp = DateTime.Now.AddHours(-2), IsMe = false },
+                new() { SenderName = userName, SenderDept = userDept, Message = "I am looking into it. Which documents exactly?", Timestamp = DateTime.Now.AddHours(-1.5), IsMe = true },
+                new() { SenderName = "Rahat Ahmed", SenderDept = "CAD Admin", Message = "The Audit Financial Statement for 2023 is not clear.", Timestamp = DateTime.Now.AddHours(-1), IsMe = false },
+                new() { SenderName = userName, SenderDept = userDept, Message = "Got it. I will re-upload a high-resolution scan by today.", Timestamp = DateTime.Now.AddMinutes(-30), IsMe = true },
+                new() { SenderName = "Rahat Ahmed", SenderDept = "CAD Admin", Message = "Great, thanks! Let me know once done.", Timestamp = DateTime.Now.AddMinutes(-10), IsMe = false }
+            }
+        };
+
+        return View(model);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

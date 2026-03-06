@@ -39,4 +39,34 @@ public class LoanController : Controller
         }
         return View(model);
     }
+
+    public IActionResult Details(string id)
+    {
+        // Mocking the specific APP-2024-001 or any ID
+        var model = new SBL.Web.Models.ViewModels.ApplicationDetailViewModel
+        {
+            Id = id ?? "APP-2024-001",
+            CustomerName = "Md. Jahidur Rahman",
+            LoanType = "Small Business Loan",
+            Amount = "BDT 5,000,000",
+            Tenure = "60 Months",
+            Branch = "Corporate Head Office",
+            RmName = "Sarwar Hossain",
+            Purpose = "Business Expansion & Working Capital",
+            Status = "under_review",
+            CreatedAt = DateTime.Now.AddDays(-5),
+            Documents = new List<SBL.Web.Models.ViewModels.ApplicationDocument>
+            {
+                new() { Name = "Valid Trade License", Uploaded = true },
+                new() { Name = "Last 12 Months Bank Statement", Uploaded = true },
+                new() { Name = "National ID / Passport", Uploaded = true },
+                new() { Name = "Utility Bill (Business/Residence)", Uploaded = true },
+                new() { Name = "Financial Statements (Audit)", Uploaded = false },
+                new() { Name = "CIB Undertaking", Uploaded = true }
+            }
+        };
+
+        ViewData["Title"] = $"Application {model.Id}";
+        return View(model);
+    }
 }
