@@ -1,0 +1,46 @@
+/* 
+    MTB SBL Portal - Custom Overrides
+    ---------------------------------
+    Use this file for styles that are not handled by Tailwind or need explicit overrides.
+*/
+
+/* Sidebar transition */
+#sidebar { 
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { 
+    width: 5px; height: 5px; 
+}
+::-webkit-scrollbar-track { 
+    background: transparent; 
+}
+::-webkit-scrollbar-thumb { 
+    background: #cbd5e1; border-radius: 10px; 
+}
+
+/* Flatpickr Year Selection Improvement */
+.flatpickr-calendar .numInputWrapper span { 
+    display: block !important; opacity: 1 !important; 
+}
+.flatpickr-current-month .numInputWrapper input.cur-year { 
+    font-weight: 400 !important; cursor: pointer; 
+}
+.flatpickr-monthDropdown-months, .flatpickr-monthDropdown-month { 
+    font-weight: 400 !important; 
+}
+
+/* Chat Component Overrides */
+.btn-chat-send {
+    background-color: #2563eb !important;
+}
+.btn-chat-send:hover {
+    background-color: #1d4ed8 !important;
+}
+
+/* Text Selection Override (Force Blue) */
+::selection {
+    background-color: #dbeafe !important; /* blue-100 */
+    color: #1e3a8a !important; /* blue-900 */
+}
