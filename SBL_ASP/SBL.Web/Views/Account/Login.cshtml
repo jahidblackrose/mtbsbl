@@ -10,61 +10,60 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - MTB SBL Portal</title>
+    <script>
+        // Safety: Ensure UMD libraries don't try to register with a broken/unexpected AMD loader
+        window.define = undefined;
+    </script>
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/toastify/toastify.min.css">
     <script src="~/lib/lucide/lucide.min.js"></script>
     <script src="~/lib/toastify/toastify.js"></script>
 </head>
-<body class="bg-slate-50 antialiased min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-    <!-- Background Blobs (Soft Lavender Aesthetic) -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
-        <div class="absolute -top-24 -right-20 w-[500px] h-[500px] bg-lavender/30 rounded-full blur-[120px] animate-blob"></div>
-        <div class="absolute -bottom-24 -left-20 w-[500px] h-[500px] bg-lavender/20 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
-    </div>
+<body class="bg-slate-50 antialiased min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-[400px] animate-fade-in">
         <!-- Logo Section -->
         <div class="text-center mb-6">
             <div class="inline-flex mb-4">
                 <img src="~/images/logo.jpeg" alt="MTB Logo" class="h-16 w-auto rounded-xl shadow-lg" />
             </div>
-            <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">SBL Portal</h1>
-            <p class="text-slate-500 text-xs font-semibold uppercase tracking-widest mt-1">Mutual Trust Bank Limited</p>
+            <h1 class="text-2xl text-slate-950 tracking-tight">SBL Portal</h1>
+            <p class="text-slate-500 text-xs uppercase tracking-widest mt-1">Mutual Trust Bank Limited</p>
         </div>
 
         <!-- Login Card -->
-        <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-300 overflow-hidden">
             <form asp-action="Login" method="post" class="p-6 md:p-8 space-y-4" id="loginForm">
                 @Html.AntiForgeryToken()
                 
-                <div asp-validation-summary="ModelOnly" class="bg-red-50 text-red-600 p-3 rounded-xl text-xs border border-red-100 font-semibold"></div>
+                <div asp-validation-summary="ModelOnly" class="bg-red-50 text-red-600 p-3 rounded-xl text-xs border border-red-100"></div>
 
                 <div class="space-y-4">
                     <div class="space-y-1.5">
-                        <label asp-for="EmpId" class="text-[10px] font-semibold uppercase tracking-widest text-slate-800 ml-1">Employee ID</label>
+                        <label asp-for="EmpId" class="text-[10px] uppercase tracking-widest text-slate-500 ml-1">Employee ID</label>
                         <div class="relative">
-                            <input asp-for="EmpId" type="text" required class="w-full text-sm bg-slate-50 focus:bg-white pl-4 pr-10 py-3 rounded-xl border border-slate-100 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-normal" placeholder="Enter your ID" />
+                            <input asp-for="EmpId" type="text" required class="w-full text-sm bg-slate-50 focus:bg-white pl-4 pr-10 py-3 rounded-xl border border-slate-300 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-normal" placeholder="Enter your ID" />
                             <i data-lucide="user" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
                         </div>
-                        <span asp-validation-for="EmpId" class="text-red-500 text-[10px] font-semibold"></span>
+                        <span asp-validation-for="EmpId" class="text-red-500 text-[10px]"></span>
                     </div>
 
                     <div class="space-y-1.5">
-                        <label asp-for="Password" class="text-[10px] font-semibold uppercase tracking-widest text-slate-800 ml-1">Password</label>
+                        <label asp-for="Password" class="text-[10px] uppercase tracking-widest text-slate-500 ml-1">Password</label>
                         <div class="relative">
-                            <input asp-for="Password" type="password" required class="w-full text-sm bg-slate-50 focus:bg-white pl-4 pr-10 py-3 rounded-xl border border-slate-100 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-normal" placeholder="••••••••" />
+                            <input asp-for="Password" type="password" required class="w-full text-sm bg-slate-50 focus:bg-white pl-4 pr-10 py-3 rounded-xl border border-slate-300 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-normal" placeholder="••••••••" />
                             <i data-lucide="lock" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
                         </div>
-                        <span asp-validation-for="Password" class="text-red-500 text-[10px] font-semibold"></span>
+                        <span asp-validation-for="Password" class="text-red-500 text-[10px]"></span>
                     </div>
 
                     <!-- Captcha -->
-                    <div class="bg-primary/5 p-4 rounded-2xl border border-primary/10 space-y-2">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2">
                         <div class="flex justify-between items-center px-1">
-                            <label asp-for="CaptchaAnswer" class="text-slate-900 text-xs font-semibold uppercase tracking-tight">Security Check</label>
-                            <span class="text-primary font-bold text-sm">@Model.CaptchaQuestion</span>
+                            <label asp-for="CaptchaAnswer" class="text-slate-950 text-xs uppercase tracking-tight">Security Check</label>
+                            <span class="text-primary text-sm font-normal">@Model.CaptchaQuestion</span>
                         </div>
-                        <input asp-for="CaptchaAnswer" type="text" required autocomplete="off" class="w-full text-sm bg-white pl-4 py-2.5 rounded-xl border border-slate-200 focus:border-primary outline-none font-normal text-center" placeholder="Answer" />
-                        <span asp-validation-for="CaptchaAnswer" class="text-red-500 text-[10px] font-semibold block text-center"></span>
+                        <input asp-for="CaptchaAnswer" type="text" required autocomplete="off" class="w-full text-sm bg-white pl-4 py-2.5 rounded-xl border border-slate-300 focus:border-primary outline-none font-normal text-center" placeholder="Answer" />
+                        <span asp-validation-for="CaptchaAnswer" class="text-red-500 text-[10px] block text-center"></span>
                     </div>
 
                     <div class="flex items-center justify-between px-1">
@@ -134,7 +133,8 @@
         document.querySelectorAll('.quick-login-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.getElementById('EmpId').value = this.getAttribute('data-id');
-                document.getElementById('Password').value = '';
+                document.getElementById('Password').value = 'password';
+                document.getElementById('CaptchaAnswer').value = '10'; // Dummy answer
                 loginBtn.disabled = true;
                 btnText.innerText = "Authenticating...";
                 spinner.classList.remove('hidden');

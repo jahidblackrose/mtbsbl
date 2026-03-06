@@ -4,27 +4,29 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MTB Loan Portal</title>
+    <script>
+        // Safety: Ensure UMD libraries don't try to register with a broken/unexpected AMD loader
+        window.define = undefined;
+    </script>
     <!-- Fonts (System Stack for Security/Offline) -->
     <style>
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; }
     </style>
     <!-- Tailwind Output -->
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <!-- Modern UI Component Libraries -->
+    <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" />
+    <link rel="stylesheet" href="~/lib/tom-select/tom-select.css" />
+    <link rel="stylesheet" href="~/lib/toastify/toastify.min.css" />
     <!-- Custom Overrides -->
     <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
-    <!-- Modern UI Component Libraries -->
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 font-normal relative overflow-x-hidden">
-    <!-- Background Blobs (Soft Lavender Aesthetic) -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
-        <div class="absolute -top-24 -right-20 w-96 h-96 bg-lavender/30 rounded-full blur-[100px] animate-blob"></div>
-        <div class="absolute -bottom-24 -left-20 w-96 h-96 bg-lavender/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-    </div>
+<body class="min-h-screen bg-white text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 font-normal">
     <!-- Full Page Loader -->
     <div id="globalLoader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="flex flex-col items-center gap-3">
             <i data-lucide="loader-2" class="h-10 w-10 animate-spin text-primary"></i>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 animate-pulse">Synchronizing Data</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500 animate-pulse">Synchronizing Data</p>
         </div>
     </div>
 
@@ -43,7 +45,7 @@
 
             <div class="flex items-center gap-2">
                 <img src="~/images/logo.jpeg" alt="MTB Logo" class="h-8 w-auto rounded-lg shadow-sm" />
-                <span class="hidden text-[10px] font-semibold text-slate-800 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
+                <span class="hidden text-[10px] text-slate-950 sm:inline uppercase tracking-[0.2em] border-l pl-3 ml-1">
                     SBL/SBL PLUS Application Portal
                 </span>
             </div>
@@ -51,12 +53,12 @@
             <div class="ml-auto flex items-center gap-3">
                 <!-- User Profile -->
                 <a asp-controller="Account" asp-action="Profile" class="flex items-center gap-2.5 px-2.5 hover:bg-slate-50 rounded-xl py-1.5 transition-all group border border-transparent">
-                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-[10px] font-bold text-white shadow-md group-hover:scale-110 transition-transform">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-[10px] text-white shadow-md group-hover:scale-110 transition-transform">
                         @Context.Session.GetString("UserName")?[0]
                     </div>
                     <div class="hidden text-left md:block">
-                        <p class="text-[11px] font-semibold leading-none text-slate-900">@Context.Session.GetString("UserName")</p>
-                        <p class="text-[9px] text-slate-800 mt-0.5 uppercase font-medium tracking-tighter">@Context.Session.GetString("UserRole")</p>
+                        <p class="text-[11px] leading-none text-slate-950">@Context.Session.GetString("UserName")</p>
+                        <p class="text-[9px] text-slate-600 mt-0.5 uppercase tracking-tighter">@Context.Session.GetString("UserRole")</p>
                     </div>
                 </a>
                 
@@ -119,6 +121,7 @@
     </div>
 
     <!-- Modern UI Component Libraries -->
+    <script src="~/lib/lucide/lucide.min.js"></script>
     <script src="~/lib/flatpickr/flatpickr.min.js"></script>
     <script src="~/lib/tom-select/tom-select.complete.min.js"></script>
     <script src="~/lib/toastify/toastify.js"></script>

@@ -44,3 +44,44 @@
     background-color: #dbeafe !important; /* blue-100 */
     color: #1e3a8a !important; /* blue-900 */
 }
+
+/* TomSelect Professional Styles */
+.ts-wrapper.single .ts-control {
+    background-color: #f8fafc !important; /* slate-50 */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+    border-radius: 0.5rem !important; /* rounded-lg */
+    padding: 0.5rem 1rem !important;
+    min-height: 2.5rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    transition: all 0.2s !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ts-wrapper.single.focus .ts-control {
+    background-color: #ffffff !important;
+    border-color: #3b82f6 !important; /* primary */
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+.ts-dropdown {
+    border-radius: 0.75rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+}
+
+.ts-dropdown .active {
+    background-color: #eff6ff !important;
+    color: #2563eb !important;
+}
+
+.ts-dropdown .option {
+    border-radius: 0.5rem !important;
+    margin-bottom: 0.25rem !important;
+}
