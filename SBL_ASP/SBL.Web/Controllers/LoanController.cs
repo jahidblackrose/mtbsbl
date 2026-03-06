@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SBL.Web.Models;
+using SBL.Web.Models.ViewModels;
 using SBL.Web.Services;
 
 namespace SBL.Web.Controllers;
@@ -7,10 +8,12 @@ namespace SBL.Web.Controllers;
 public class LoanController : Controller
 {
     private readonly ILoanService _loanService;
+    private readonly IPdfService _pdfService;
 
-    public LoanController(ILoanService loanService)
+    public LoanController(ILoanService loanService, IPdfService pdfService)
     {
         _loanService = loanService;
+        _pdfService = pdfService;
     }
 
     public async Task<IActionResult> Index()
@@ -23,21 +26,87 @@ public class LoanController : Controller
     public IActionResult Create()
     {
         ViewData["Title"] = "New Application";
-        return View(new LoanApplicationModel());
+        var model = new SBL.Web.Models.ViewModels.LoanApplicationViewModel
+        {
+            Documents = new List<SBL.Web.Models.ViewModels.ApplicationDocument>
+            {
+                new() { Name = "Trade License", Uploaded = false },
+                new() { Name = "Bank Statement (12 Months)", Uploaded = false },
+                new() { Name = "National ID", Uploaded = false },
+                new() { Name = "TIN Certificate", Uploaded = false },
+                new() { Name = "Utility Bill", Uploaded = false }
+            }
+        };
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult LookupAccount(string accountNumber)
+    {
+        if (string.IsNullOrEmpty(accountNumber)) return Json(new { success = false });
+
+        // Mock API Call Response
+        return Json(new { 
+            success = true, 
+            data = new {
+                customerName = "Md. Jahidur Rahman",
+                fathersName = "Late Md. Azizur Rahman",
+                mothersName = "Mrs. Jahanara Begum",
+                dob = "1985-05-15",
+                gender = "Male",
+                maritalStatus = "Married",
+                nid = "1985269412345678",
+                tin = "123456789012",
+                mobile = "01711000000",
+                email = "jahid@example.com",
+                profession = "Business",
+                designation = "Proprietor",
+                orgName = "Jahid Enterprise",
+                income = 150000,
+                presentAddress = "House 12, Road 5, Dhanmondi, Dhaka",
+                permanentAddress = "Village: Raypur, PO: Raypur, Dist: Lakshmipur"
+            }
+        });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(LoanApplicationModel model)
+    public async Task<IActionResult> Create(SBL.Web.Models.ViewModels.LoanApplicationViewModel model)
     {
         if (ModelState.IsValid)
         {
-            model.Branch = "Main Branch"; // Mock data
-            model.RmName = "John Doe";    // Mock data
-            await _loanService.SubmitApplicationAsync(model);
+            // Map ViewModel to Domain Model
+            var domainModel = new LoanApplicationModel
+            {
+                CustomerName = model.CustomerName,
+                Amount = model.RequestedAmount.ToString(),
+                LoanType = Enum.TryParse<SBL.Web.Models.Enums.LoanType>(model.LoanType?.Replace(" ", "_"), true, out var parsedType) ? parsedType : SBL.Web.Models.Enums.LoanType.SBL,
+                Status = SBL.Web.Models.Enums.LoanStatus.Submitted,
+                Branch = "Corporate Head Office",
+                RmName = "Sarwar Hossain"
+            };
+
+            await _loanService.SubmitApplicationAsync(domainModel);
+            TempData["SuccessMessage"] = "Application submitted successfully!";
             return RedirectToAction(nameof(Index));
         }
         return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult DownloadProposal(LoanApplicationViewModel model)
+    {
+        var pdfBytes = _pdfService.GenerateProposal(model);
+        return File(pdfBytes, "application/pdf", $"Proposal_{model.AccountNumber}.pdf");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult DownloadSanction(LoanApplicationViewModel model)
+    {
+        var pdfBytes = _pdfService.GenerateSanction(model);
+        return File(pdfBytes, "application/pdf", $"Sanction_{model.AccountNumber}.pdf");
     }
 
     public IActionResult Details(string id)
